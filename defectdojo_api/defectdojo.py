@@ -251,7 +251,7 @@ class DefectDojoAPI(object):
         :param user_id: User from the user table.
         """
 
-        self.set_engagement(id, status="Completed", active=False)
+        return self.set_engagement(id, status="Completed", active=False)
 
     def set_engagement(self, id, product_id=None, lead_id=None, name=None, status=None, target_start=None,
         target_end=None, active=None, pen_test=None, check_list=None, threat_model=None, risk_path=None,
