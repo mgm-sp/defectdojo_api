@@ -1111,6 +1111,19 @@ class DefectDojoAPI(object):
 
         return self._request('GET', 'tool_product_settings/', params)
 
+
+    ###### Test Types API ######
+    def list_test_types(self, **kwargs):
+        """Retrieves a list of test types matching the given arguments.
+
+        All keyword arguments are used to construct the query string for
+        the request, which allows you to filter the test types.
+        Refer to the DefectDojo API documentation for a complete list of
+        possible arguments.
+        """
+
+        return self._request('GET', 'test_types/', kwargs)
+
     # Utility
 
     @staticmethod
