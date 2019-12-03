@@ -1183,6 +1183,8 @@ class DefectDojoAPI(object):
                         data = response.json()
 
                     return DefectDojoResponse(message="Upload complete", data=data, success=True)
+                elif response.status_code == 202: #Accepted
+                    return DefectDojoResponse(message="Accepted", success=True)
                 elif response.status_code == 204: #Object updates
                     return DefectDojoResponse(message="Object updated.", success=True)
                 elif response.status_code == 400: #Object not created
