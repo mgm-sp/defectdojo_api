@@ -1182,21 +1182,58 @@ class DefectDojoAPI(object):
                     except:
                         data = response.json()
 
-                    return DefectDojoResponse(message="Upload complete", data=data, success=True)
+                    return DefectDojoResponse(
+                        message="Upload complete",
+                        data=data,
+                        success=True,
+                        response_code=201
+                    )
                 elif response.status_code == 202: #Accepted
-                    return DefectDojoResponse(message="Accepted", success=True)
+                    return DefectDojoResponse(
+                        message="Accepted",
+                        success=True,
+                        response_code=202
+                    )
                 elif response.status_code == 204: #Object updates
-                    return DefectDojoResponse(message="Object updated.", success=True)
+                    return DefectDojoResponse(
+                        message="Object updated.",
+                        success=True,
+                        response_code=204
+                    )
                 elif response.status_code == 400: #Object not created
-                    return DefectDojoResponse(message="Error occured in API.", success=False, data=response.text)
+                    return DefectDojoResponse(
+                        message="Error occured in API.",
+                        success=False,
+                        data=response.text,
+                        response_code=400
+                    )
                 elif response.status_code == 404: #Object not created
-                    return DefectDojoResponse(message="Object id does not exist.", success=False, data=response.text)
+                    return DefectDojoResponse(
+                        message="Object id does not exist.",
+                        success=False,
+                        data=response.text,
+                        response_code=404
+                    )
                 elif response.status_code == 401:
-                    return DefectDojoResponse(message="Unauthorized.", success=False, data=response.text)
+                    return DefectDojoResponse(
+                        message="Unauthorized.",
+                        success=False,
+                        data=response.text,
+                        response_code=401
+                    )
                 elif response.status_code == 414:
-                    return DefectDojoResponse(message="Request-URI Too Large.", success=False)
+                    return DefectDojoResponse(
+                        message="Request-URI Too Large.",
+                        success=False,
+                        response_code=414
+                    )
                 elif response.status_code == 500:
-                    return DefectDojoResponse(message="An error 500 occured in the API.", success=False, data=response.text)
+                    return DefectDojoResponse(
+                        message="An error 500 occured in the API.",
+                        success=False,
+                        data=response.text,
+                        response_code=500
+                    )
                 else:
                     data = response.json()
                     return DefectDojoResponse(message="Success", data=data, success=True, response_code=response.status_code)
