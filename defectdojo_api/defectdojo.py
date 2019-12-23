@@ -502,7 +502,8 @@ class DefectDojoAPI(object):
     ###### Findings API #######
     def list_findings(self, active=None, duplicate=None, mitigated=None, severity=None, verified=None, severity_lt=None,
         severity_gt=None, severity_contains=None, title_contains=None, url_contains=None, date_lt=None,
-        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20):
+        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20,
+        test_engagement_in=None):
 
         """Returns filtered list of findings.
 
@@ -524,6 +525,7 @@ class DefectDojoAPI(object):
         :param test_in: Test id(s) associated with a finding. (1,2 or 1)
         :param build_id: User specified build id relating to the build number from the build server. (Jenkins, Travis etc.).
         :param limit: Number of records to return.
+        :param test_engagement_in: Engagement id(s) associated with the test the finding is associated with. (1,2 or 1)
 
         """
 
@@ -581,6 +583,9 @@ class DefectDojoAPI(object):
 
         if build:
             params['build_id__contains'] = build
+
+        if test_engagement_in:
+            params['test__engagement__in'] = test_engagement_in
 
         return self._request('GET', 'findings/', params)
 
