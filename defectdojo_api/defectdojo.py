@@ -528,7 +528,7 @@ class DefectDojoAPI(object):
         """
 
         params  = {}
-        if limit:
+        if limit is not None:
             params['limit'] = limit
 
         if active:
