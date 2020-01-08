@@ -503,7 +503,7 @@ class DefectDojoAPI(object):
     def list_findings(self, active=None, duplicate=None, mitigated=None, severity=None, verified=None, severity_lt=None,
         severity_gt=None, severity_contains=None, title_contains=None, url_contains=None, date_lt=None,
         date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20,
-        test_engagement_in=None, id_in=None):
+        test_engagement_in=None, id_in=None, offset=0):
 
         """Returns filtered list of findings.
 
@@ -527,6 +527,7 @@ class DefectDojoAPI(object):
         :param limit: Number of records to return.
         :param test_engagement_in: Engagement id(s) associated with the test the finding is associated with. (1,2 or 1)
         :param id_in: Id(s) of the finding(s) to return. (1,2 or 1)
+        :param offset: Offset to the first record to return.
 
         """
 
@@ -590,6 +591,9 @@ class DefectDojoAPI(object):
 
         if id_in:
             params['id__in'] = id_in
+
+        if offset:
+            params['offset'] = offset
 
         return self._request('GET', 'findings/', params)
 
