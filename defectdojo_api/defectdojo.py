@@ -465,15 +465,19 @@ class DefectDojoAPI(object):
 
         return self._request('POST', 'tests/', data=data)
 
-    def set_test(self, test_id, engagement_id=None, test_type=None, environment=None,
-        target_start=None, target_end=None, percent_complete=None):
-        """Creates a product with the given properties.
+    def set_test(self, test_id, engagement_id=None, test_type=None,
+                 environment=None, target_start=None, target_end=None,
+                 percent_complete=None, title=None, description=None):
+        """Updates the test with the given ID using the given properties.
 
+        :param test_id: Test id.
         :param engagement_id: Engagement id.
         :param test_type: Test type key id.
         :param target_start: Test start date.
         :param target_end: Test end date.
         :param percent_complete: Percentage until test completion.
+        :param title: Test title.
+        :param description: Test description.
 
         """
 
@@ -496,6 +500,12 @@ class DefectDojoAPI(object):
 
         if percent_complete:
             data['percent_complete'] = percent_complete
+
+        if title is not None:
+            data['title'] = title
+
+        if description is not None:
+            data['description'] = description
 
         return self._request('PUT', 'tests/' + str(test_id) + '/', data=data)
 
