@@ -1189,8 +1189,10 @@ class DefectDojoAPI(object):
                 print(method + ' ' + url)
                 print(params)
 
-            response = requests.request(method=method, url=self.host + url, params=params, data=data, files=files, headers=headers,
-                                        timeout=self.timeout, verify=self.verify_ssl, cert=self.cert, proxies=proxies)
+            session = DefectDojoSession()
+
+            response = session.request(method=method, url=self.host + url, params=params, data=data, files=files, headers=headers,
+                                       timeout=self.timeout, verify=self.verify_ssl, cert=self.cert, proxies=proxies)
 
             if self.debug:
                 print(response.status_code)
@@ -1271,6 +1273,24 @@ class DefectDojoAPI(object):
                                      success=False)
         except requests.exceptions.RequestException:
             return DefectDojoResponse(message='There was an error while handling the request.', success=False)
+
+
+class DefectDojoSession(requests.Session):
+    """
+    Session for the requests module that is a bit more permissive regarding
+    the Authorization header and redirects. It still sends it if the redirect
+    points to the same hostname, even if scheme and / or port are different.
+    """
+    def rebuild_auth(self, prepared_request, response):
+        headers = prepared_request.headers
+        if 'Authorization' in headers:
+            original_url = requests.utils.urlparse(response.request.url)
+            redirect_url = requests.utils.urlparse(prepared_request.url)
+
+            # If hostname is different (but we're ignoring scheme and port),
+            # remove Authorization header:
+            if original_url.hostname != redirect_url.hostname:
+                del headers['Authorization']
 
 
 class DefectDojoResponse(object):
