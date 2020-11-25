@@ -205,7 +205,7 @@ class DefectDojoAPIv2(object):
         :param user_id: User from the user table.
         """
 
-        self.set_engagement(id, status="Completed", active=False)
+        return self.set_engagement(id, status="Completed", active=False)
 
     def set_engagement(self, id, product_id=None, lead_id=None, name=None, status=None, target_start=None,
         target_end=None, active=None, pen_test=None, check_list=None, threat_model=None, risk_path=None,
@@ -399,7 +399,9 @@ class DefectDojoAPIv2(object):
         """
         return self._request('GET', 'tests/' + str(test_id) + '/')
 
-    def create_test(self, engagement_id, test_type, environment, target_start, target_end, percent_complete=None):
+    def create_test(self, engagement_id, test_type, environment, target_start,
+                    target_end, percent_complete=None, title=None,
+                    description=None):
         """Creates a product with the given properties.
 
         :param engagement_id: Engagement id.
@@ -407,6 +409,8 @@ class DefectDojoAPIv2(object):
         :param target_start: Test start date.
         :param target_end: Test end date.
         :param percent_complete: Percentage until test completion.
+        :param title: Test title.
+        :param description: Test description.
 
         """
 
@@ -419,17 +423,26 @@ class DefectDojoAPIv2(object):
             'percent_complete': percent_complete
         }
 
+        if title:
+            data['title'] = title
+
+        if description:
+            data['description'] = description
+
         return self._request('POST', 'tests/', data=data)
 
-    def set_test(self, test_id, engagement_id=None, test_type=None, environment=None,
-        target_start=None, target_end=None, percent_complete=None):
-        """Creates a product with the given properties.
+    def set_test(self, test_id, engagement_id=None, test_type=None,
+                 environment=None, target_start=None, target_end=None,
+                 percent_complete=None, title=None, description=None):
+        """Updates the test with the given properties.
 
-        :param engagement_id: Engagement id.
+        :param test_id: Test id.
         :param test_type: Test type key id.
         :param target_start: Test start date.
         :param target_end: Test end date.
         :param percent_complete: Percentage until test completion.
+        :param title: Test title.
+        :param description: Test description.
 
         """
 
@@ -459,12 +472,19 @@ class DefectDojoAPIv2(object):
         if percent_complete:
             data['percent_complete'] = percent_complete
 
+        if title is not None:
+            data['title'] = title
+
+        if description is not None:
+            data['description'] = description
+
         return self._request('PUT', 'tests/' + str(test_id) + '/', data=data)
 
     ###### Findings API #######
     def list_findings(self, active=None, duplicate=None, mitigated=None, severity=None, verified=None, severity_lt=None,
         severity_gt=None, severity_contains=None, title_contains=None, url_contains=None, date_lt=None,
-        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20):
+        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20,
+        test_engagement_in=None, id_in=None, offset=0):
 
         """Returns filtered list of findings.
 
@@ -486,11 +506,14 @@ class DefectDojoAPIv2(object):
         :param test_in: Test id(s) associated with a finding. (1,2 or 1)
         :param build_id: User specified build id relating to the build number from the build server. (Jenkins, Travis etc.).
         :param limit: Number of records to return.
+        :param test_engagement_in: Engagement id(s) associated with the test the finding is associated with. (1,2 or 1)
+        :param id_in: Id(s) of the finding(s) to return. (1,2 or 1)
+        :param offset: Offset to the first record to return.
 
         """
 
         params  = {}
-        if limit:
+        if limit is not None:
             params['limit'] = limit
 
         if active:
@@ -543,6 +566,15 @@ class DefectDojoAPIv2(object):
 
         if build:
             params['build_id__contains'] = build
+
+        if test_engagement_in:
+            params['test__engagement__in'] = test_engagement_in
+
+        if id_in:
+            params['id__in'] = id_in
+
+        if offset:
+            params['offset'] = offset
 
         return self._request('GET', 'findings/', params)
 
@@ -1089,6 +1121,18 @@ class DefectDojoAPIv2(object):
 
         return self._request('GET', 'tool_product_settings/', params)
 
+
+    ###### Test Types API ######
+    def list_test_types(self, **kwargs):
+        """Retrieves a list of test types matching the given arguments.
+        All keyword arguments are used to construct the query string for
+        the request, which allows you to filter the test types.
+        Refer to the DefectDojo API documentation for a complete list of
+        possible arguments.
+        """
+
+        return self._request('GET', 'test_types/', kwargs)
+
     # Utility
 
     @staticmethod
@@ -1135,8 +1179,10 @@ class DefectDojoAPIv2(object):
                 print("data:" + str(data))
                 print("files:" + str(files))
 
-            response = requests.request(method=method, url=self.host + url, params=params, data=data, files=files, headers=headers,
-                                        timeout=self.timeout, verify=self.verify_ssl, cert=self.cert, proxies=proxies)
+            session = DefectDojoSession()
+
+            response = session.request(method=method, url=self.host + url, params=params, data=data, files=files, headers=headers,
+                                       timeout=self.timeout, verify=self.verify_ssl, cert=self.cert, proxies=proxies)
 
             if self.debug:
                 print("response:")
@@ -1153,6 +1199,8 @@ class DefectDojoAPIv2(object):
                         data = response.json()
 
                     return DefectDojoResponse(message="Upload complete", response_code=response.status_code, data=data, success=True)
+                elif response.status_code == 202: #Accepted
+                    return DefectDojoResponse(message="Accepted", response_code=response.status_code, success=True)
                 elif response.status_code == 204: #Object updates
                     return DefectDojoResponse(message="Object updated.", response_code=response.status_code, success=True)
                 elif response.status_code == 400: #Object not created
@@ -1184,6 +1232,25 @@ class DefectDojoAPIv2(object):
             print("There was an error while handling the request.")
             print(e)
             return DefectDojoResponse(message='There was an error while handling the request.', response_code=response.status_code, success=False)
+
+
+class DefectDojoSession(requests.Session):
+    """
+    Session for the requests module that is a bit more permissive regarding
+    the Authorization header and redirects. It still sends it if the redirect
+    points to the same hostname, even if scheme and / or port are different.
+    """
+
+    def rebuild_auth(self, prepared_request, response):
+        headers = prepared_request.headers
+        if 'Authorization' in headers:
+            original_url = requests.utils.urlparse(response.request.url)
+            redirect_url = requests.utils.urlparse(prepared_request.url)
+
+            # If hostname is different (but we're ignoring scheme and port),
+            # remove Authorization header:
+            if original_url.hostname != redirect_url.hostname:
+                del headers['Authorization']
 
 
 class DefectDojoResponse(object):
