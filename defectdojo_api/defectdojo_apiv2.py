@@ -481,102 +481,15 @@ class DefectDojoAPIv2(object):
         return self._request('PUT', 'tests/' + str(test_id) + '/', data=data)
 
     ###### Findings API #######
-    def list_findings(self, active=None, duplicate=None, mitigated=None, severity=None, verified=None, severity_lt=None,
-        severity_gt=None, severity_contains=None, title_contains=None, url_contains=None, date_lt=None,
-        date_gt=None, date=None, product_id_in=None, engagement_id_in=None, test_id_in=None, build=None, limit=20,
-        test_engagement_in=None, id_in=None, offset=0):
-
-        """Returns filtered list of findings.
-
-        :param active: Finding is active: (true or false)
-        :param duplicate: Duplicate finding (true or false)
-        :param mitigated: Mitigated finding (true or false)
-        :param severity: Severity: Low, Medium, High and Critical.
-        :param verified: Finding verified.
-        :param severity_lt: Severity less than Low, Medium, High and Critical.
-        :param severity_gt: Severity greater than Low, Medium, High and Critical.
-        :param severity_contains: Severity contains: (Medium, Critical)
-        :param title_contains: Filter by title containing the keyword.
-        :param url_contains: Filter by URL containing the keyword.
-        :param date_lt: Date less than.
-        :param date_gt: Date greater than.
-        :param date: Return findings for a particular date.
-        :param product_id_in: Product id(s) associated with a finding. (1,2 or 1)
-        :param engagement_id_in: Engagement id(s) associated with a finding. (1,2 or 1)
-        :param test_in: Test id(s) associated with a finding. (1,2 or 1)
-        :param build_id: User specified build id relating to the build number from the build server. (Jenkins, Travis etc.).
-        :param limit: Number of records to return.
-        :param test_engagement_in: Engagement id(s) associated with the test the finding is associated with. (1,2 or 1)
-        :param id_in: Id(s) of the finding(s) to return. (1,2 or 1)
-        :param offset: Offset to the first record to return.
-
+    def list_findings(self, **kwargs):
+        """Retrieves a list of findings matching the given arguments.
+        All keyword arguments are used to construct the query string for
+        the request, which allows you to filter the findings.
+        Refer to the DefectDojo API documentation for a complete list of
+        possible arguments.
         """
 
-        params  = {}
-        if limit is not None:
-            params['limit'] = limit
-
-        if active:
-            params['active'] = active
-
-        if duplicate:
-            params['duplicate'] = duplicate
-
-        if mitigated:
-            params['mitigated'] = mitigated
-
-        if severity:
-            params['severity__in'] = severity
-
-        if verified:
-            params['verified'] = verified
-
-        if severity_lt:
-            params['severity__lt'] = severity_lt
-
-        if severity_gt:
-            params['severity__gt'] = severity_gt
-
-        if severity_contains:
-            params['severity__contains'] = severity_contains
-
-        if title_contains:
-            params['title__contains'] = title_contains
-
-        if url_contains:
-            params['url__contains'] = url_contains
-
-        if date_lt:
-            params['date__lt'] = date_lt
-
-        if date_gt:
-            params['date__gt'] = date_gt
-
-        if date:
-            params['date'] = date
-
-        if engagement_id_in:
-            params['engagement__id__in'] = engagement_id_in
-
-        if product_id_in:
-            params['product__id__in'] = product_id_in
-
-        if test_id_in:
-            params['test__id__in'] = test_id_in
-
-        if build:
-            params['build_id__contains'] = build
-
-        if test_engagement_in:
-            params['test__engagement__in'] = test_engagement_in
-
-        if id_in:
-            params['id__in'] = id_in
-
-        if offset:
-            params['offset'] = offset
-
-        return self._request('GET', 'findings/', params)
+        return self._request('GET', 'findings/', kwargs)
 
     def get_finding(self, finding_id):
         """
