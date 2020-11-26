@@ -1205,10 +1205,12 @@ class DefectDojoAPIv2(object):
                     return DefectDojoResponse(message="Object updated.", response_code=response.status_code, success=True)
                 elif response.status_code == 400: #Object not created
                     return DefectDojoResponse(message="Error occured in API.", response_code=response.status_code, success=False, data=response.text)
-                elif response.status_code == 404: #Object not created
-                    return DefectDojoResponse(message="Object id does not exist.", response_code=response.status_code, success=False, data=response.text)
                 elif response.status_code == 401:
                     return DefectDojoResponse(message="Unauthorized.", response_code=response.status_code, success=False, data=response.text)
+                elif response.status_code == 403: #Forbidden
+                    return DefectDojoResponse(message="Forbidden", response_code=response.status_code, success=False, data=response.text)
+                elif response.status_code == 404: #Object not created
+                    return DefectDojoResponse(message="Object id does not exist.", response_code=response.status_code, success=False, data=response.text)
                 elif response.status_code == 414:
                     return DefectDojoResponse(message="Request-URI Too Large.", response_code=response.status_code, success=False)
                 elif response.status_code == 500:
