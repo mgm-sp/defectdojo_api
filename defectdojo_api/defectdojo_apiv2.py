@@ -374,7 +374,7 @@ class DefectDojoAPIv2(object):
 
 
     ###### Test API #######
-    def list_tests(self, name=None, engagement_in=None, limit=20):
+    def list_tests(self, name=None, engagement=None, limit=20):
         """Retrieves all the tests.
 
         :param name_contains: Search by product name.
@@ -386,8 +386,8 @@ class DefectDojoAPIv2(object):
         if limit:
             params['limit'] = limit
 
-        if engagement_in:
-            params['engagement__in'] = engagement_in
+        if engagement:
+            params['engagement'] = engagement
 
         return self._request('GET', 'tests/', params)
 
