@@ -1135,18 +1135,17 @@ class DefectDojoAPIv2(object):
                 return DefectDojoResponse(message='JSON response could not be decoded.', response_code=response.status_code, success=False, data=response.text)
         except requests.exceptions.SSLError:
             print("An SSL error occurred.")
-            return DefectDojoResponse(message='An SSL error occurred.', response_code=response.status_code, success=False)
+            return DefectDojoResponse(message='An SSL error occurred.', success=False)
         except requests.exceptions.ConnectionError:
             print("A connection error occurred.")
-            return DefectDojoResponse(message='A connection error occurred.', response_code=response.status_code, success=False)
+            return DefectDojoResponse(message='A connection error occurred.', success=False)
         except requests.exceptions.Timeout:
             print("The request timed out")
-            return DefectDojoResponse(message='The request timed out after ' + str(self.timeout) + ' seconds.', response_code=response.status_code,
-                                     success=False)
+            return DefectDojoResponse(message='The request timed out after ' + str(self.timeout) + ' seconds.', success=False)
         except requests.exceptions.RequestException as e:
             print("There was an error while handling the request.")
             print(e)
-            return DefectDojoResponse(message='There was an error while handling the request.', response_code=response.status_code, success=False)
+            return DefectDojoResponse(message='There was an error while handling the request.', success=False)
 
 
 class DefectDojoSession(requests.Session):
