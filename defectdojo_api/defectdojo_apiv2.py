@@ -648,7 +648,7 @@ class DefectDojoAPIv2(object):
 
     ##### Upload API #####
 
-    def upload_scan(self, engagement_id, scan_type, file, active, verified, close_old_findings, skip_duplicates, scan_date, tags=None, build=None, minimum_severity="Info"):
+    def upload_scan(self, engagement_id, scan_type, file, active, verified, scan_date, close_old_findings=False, push_to_jira=False, tags=None, build=None, minimum_severity="Info"):
         """Uploads and processes a scan file.
 
         :param application_id: Application identifier.
@@ -675,11 +675,11 @@ class DefectDojoAPIv2(object):
             'active': ('', active),
             'verified': ('', verified),
             'close_old_findings': ('', close_old_findings),
-            'skip_duplicates': ('', skip_duplicates),
             'scan_date': ('', scan_date),
             'tags': ('', tags),
             'build_id': ('', build),
-            'minimum_severity': ('', minimum_severity)
+            'minimum_severity': ('', minimum_severity),
+            'push_to_jira': ('', push_to_jira),
         }
         """
         TODO: implement these parameters:
