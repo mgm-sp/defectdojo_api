@@ -446,8 +446,6 @@ class DefectDojoAPIv2(object):
 
         """
 
-        current_test = self.get_test(test_id).data
-
         data = {}
 
         if engagement_id:
@@ -461,13 +459,9 @@ class DefectDojoAPIv2(object):
 
         if target_start:
             data['target_start'] = target_start
-        else:
-            data['target_start'] = current_test["target_start"]
 
         if target_end:
             data['target_end'] = target_end
-        else:
-            data['target_end'] = current_test["target_end"]
 
         if percent_complete:
             data['percent_complete'] = percent_complete
@@ -478,7 +472,7 @@ class DefectDojoAPIv2(object):
         if description is not None:
             data['description'] = description
 
-        return self._request('PUT', 'tests/' + str(test_id) + '/', data=data)
+        return self._request('PATCH', 'tests/' + str(test_id) + '/', data=data)
 
     ###### Findings API #######
     def list_findings(self, **kwargs):
