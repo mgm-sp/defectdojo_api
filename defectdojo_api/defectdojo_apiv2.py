@@ -198,14 +198,12 @@ class DefectDojoAPIv2(object):
 
         return self._request('POST', 'engagements/', data=data)
 
-    def close_engagement(self, id, user_id=None):
-
-        """Closes an engagement with the given properties.
+    def close_engagement(self, id):
+        """Closes the engagement with the given id.
         :param id: Engagement id.
-        :param user_id: User from the user table.
         """
 
-        return self.set_engagement(id, status="Completed", active=False)
+        return self._request('POST', 'engagements/' + str(id) + '/close/')
 
     def set_engagement(self, id, product_id=None, lead_id=None, name=None, status=None, target_start=None,
         target_end=None, active=None, pen_test=None, check_list=None, threat_model=None, risk_path=None,
