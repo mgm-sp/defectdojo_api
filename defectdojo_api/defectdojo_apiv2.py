@@ -670,11 +670,14 @@ class DefectDojoAPIv2(object):
             'verified': ('', verified),
             'close_old_findings': ('', close_old_findings),
             'scan_date': ('', scan_date),
-            'tags': ('', tags),
             'build_id': ('', build),
             'minimum_severity': ('', minimum_severity),
             'push_to_jira': ('', push_to_jira),
         }
+
+        if tags is not None:
+            data['tags'] = ('', tags)
+
         """
         TODO: implement these parameters:
           lead
