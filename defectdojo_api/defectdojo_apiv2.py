@@ -642,7 +642,7 @@ class DefectDojoAPIv2(object):
 
     ##### Upload API #####
 
-    def upload_scan(self, engagement_id, scan_type, file, active, verified, scan_date, close_old_findings=False, push_to_jira=False, tags=None, build=None, minimum_severity="Info"):
+    def upload_scan(self, engagement_id, scan_type, file, active, verified, scan_date, tags, close_old_findings=False, push_to_jira=False, build=None, minimum_severity="Info"):
         """Uploads and processes a scan file.
 
         :param application_id: Application identifier.
@@ -668,15 +668,13 @@ class DefectDojoAPIv2(object):
             'scan_type': ('', scan_type),
             'active': ('', active),
             'verified': ('', verified),
+            'tags': ('', tags),
             'close_old_findings': ('', close_old_findings),
             'scan_date': ('', scan_date),
             'build_id': ('', build),
             'minimum_severity': ('', minimum_severity),
             'push_to_jira': ('', push_to_jira),
         }
-
-        if tags is not None:
-            data['tags'] = ('', tags)
 
         """
         TODO: implement these parameters:
