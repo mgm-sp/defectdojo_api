@@ -1102,7 +1102,10 @@ class DefectDojoAPIv2(object):
                         key_id = object_id[-2]
                         data = int(key_id)
                     except:
-                        data = response.json()
+                        if len(response.text) > 0:
+                            data = response.json()
+                        else:
+                            data = None
 
                     return DefectDojoResponse(message="Upload complete", response_code=response.status_code, data=data, success=True)
                 elif response.status_code == 202: #Accepted
@@ -1122,7 +1125,10 @@ class DefectDojoAPIv2(object):
                 elif response.status_code == 500:
                     return DefectDojoResponse(message="An error 500 occured in the API.", response_code=response.status_code, success=False, data=response.text)
                 else:
-                    data = response.json()
+                    if len(response.text) > 0:
+                        data = response.json()
+                    else:
+                        data = None
                     return DefectDojoResponse(message="Success", data=data, success=True, response_code=response.status_code)
             except ValueError:
                 return DefectDojoResponse(message='JSON response could not be decoded.', response_code=response.status_code, success=False, data=response.text)
