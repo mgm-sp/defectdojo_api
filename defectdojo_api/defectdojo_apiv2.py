@@ -3,8 +3,6 @@ import requests
 import requests.exceptions
 import requests.packages.urllib3
 
-requests.packages.urllib3.add_stderr_logger()
-
 version = "1.1.6.dev2"
 
 class DefectDojoAPIv2(object):
